@@ -44,6 +44,35 @@ and set `NWN_TOOLS` in your local `.env` to match. Prebuilt releases do not
 require Nim. Keep downloaded binaries outside this repository; load the project
 environment below to make the compiler available through `PATH`.
 
+### Update the compiler
+
+The updater installs the latest stable release from
+[neverwinter.nim](https://github.com/niv/neverwinter.nim/releases/latest) into
+`NWN_TOOLS`. It also works for a first installation. After creating and editing
+your local `.env`, run from the repository root in Bash or Zsh:
+
+```bash
+set -a
+source .env
+set +a
+
+./scripts/update-nwn-compiler.sh
+export PATH="$NWN_TOOLS:$PATH"
+nwn_script_comp --help
+```
+
+To install a specific release instead:
+
+```bash
+./scripts/update-nwn-compiler.sh 2.3.1
+```
+
+The script requires `curl` and `unzip`, detects x86_64 or ARM64 Linux, and checks
+the downloaded compiler before replacing the existing executable. It cleans up
+temporary files and prints the installed path and resolved release URL. It uses
+exported environment variables; it does not source `.env` or change shell startup
+files. Run `./scripts/update-nwn-compiler.sh --help` for usage.
+
 ## Project Environment
 
 This project uses a local `.env` file so configuration stays with the project
