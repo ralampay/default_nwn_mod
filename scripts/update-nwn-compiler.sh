@@ -7,6 +7,7 @@ Usage: ./scripts/update-nwn-compiler.sh [RELEASE_TAG]
 
 Install or update nwn_script_comp from niv/neverwinter.nim releases.
 Defaults to the latest stable release; optionally specify a tag such as 2.3.1.
+Creates NWN_TOOLS if needed and installs the compiler when it is missing there.
 Export NWN_TOOLS first by explicitly loading your project .env:
 
     set -a
@@ -28,6 +29,20 @@ fi
 if [[ -z ${NWN_TOOLS:-} ]]; then
     echo 'NWN_TOOLS is unset or empty. Export it by loading your project .env first.' >&2
     exit 1
+fi
+compiler_path="$NWN_TOOLS/nwn_script_comp"
+if [[ -e $NWN_TOOLS && ! -d $NWN_TOOLS ]]; then
+    echo "NWN_TOOLS must be a directory: $NWN_TOOLS" >&2
+    exit 1
+fi
+if [[ -d $compiler_path ]]; then
+    echo "Compiler destination is a directory: $compiler_path" >&2
+    exit 1
+fi
+if [[ -e $compiler_path || -L $compiler_path ]]; then
+    action=update
+else
+    action=install
 fi
 if [[ $(uname -s) != Linux ]]; then
     echo 'This updater supports Linux only.' >&2
@@ -72,7 +87,11 @@ trap cleanup EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
 
-echo "Downloading $release ($architecture)..."
+if [[ $action == install ]]; then
+    echo "Compiler not found at $compiler_path; installing $release ($architecture)..."
+else
+    echo "Updating $compiler_path to $release ($architecture)..."
+fi
 curl --fail --location --silent --show-error --retry 2 \
     --connect-timeout 20 --max-time 300 \
     --output "$compiler_tmp/neverwinter.zip" "$download_url"
@@ -85,8 +104,12 @@ mkdir -p -- "$NWN_TOOLS"
 staged_compiler=$(mktemp "$NWN_TOOLS/.nwn_script_comp.XXXXXX")
 cp -- "$compiler_tmp/nwn_script_comp" "$staged_compiler"
 chmod 755 "$staged_compiler"
-mv -fT -- "$staged_compiler" "$NWN_TOOLS/nwn_script_comp"
+mv -fT -- "$staged_compiler" "$compiler_path"
 staged_compiler=''
 
-echo "Installed $release: $NWN_TOOLS/nwn_script_comp"
+if [[ $action == install ]]; then
+    echo "Installed $release: $compiler_path"
+else
+    echo "Updated to $release: $compiler_path"
+fi
 echo "Release asset: $download_url"

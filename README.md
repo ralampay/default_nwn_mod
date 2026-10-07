@@ -48,8 +48,10 @@ environment below to make the compiler available through `PATH`.
 
 The updater installs the latest stable release from
 [neverwinter.nim](https://github.com/niv/neverwinter.nim/releases/latest) into
-`NWN_TOOLS`. It also works for a first installation. After creating and editing
-your local `.env`, run from the repository root in Bash or Zsh:
+`NWN_TOOLS`. If `NWN_TOOLS/nwn_script_comp` is missing, it installs the compiler
+and creates the tools directory if needed; otherwise it updates the existing
+compiler. After creating and editing your local `.env`, run from the repository
+root in Bash or Zsh:
 
 ```bash
 set -a
@@ -169,7 +171,21 @@ build tools need to read those variables from their environment.
 
 ## Verify the Environment
 
-Check the values and compiler discovery:
+After exporting the environment and prepending `NWN_TOOLS` to `PATH`, run:
+
+```bash
+./scripts/doctor.sh
+```
+
+The doctor checks Linux, exported variables, absolute directory paths and access,
+example placeholders, user-data writability, compiler execution, and whether
+`PATH` selects the compiler in `NWN_TOOLS`. Missing optional user-resource
+directories produce warnings. It exits with status `1` on setup errors and `0`
+when required checks pass. It does not source `.env`, change files, or launch the
+game. These checks verify local paths and tooling; test the module in NWN:EE
+separately.
+
+To check the values and compiler discovery manually:
 
 ```bash
 echo "$NWN_TOOLS"
