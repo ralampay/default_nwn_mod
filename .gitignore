@@ -1,0 +1,30 @@
+# Generated build and release output
+/build/
+/dist/
+*.ncs
+*.NCS
+
+# Aurora Toolset working directories
+temp[0-9]*/
+
+# Local game runtime data
+/saves/
+/logs/
+/servervault/
+/localvault/
+*.log
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+
+# Editor, backup, and OS files
+*.bak
+*.tmp
+*.swp
+*~
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

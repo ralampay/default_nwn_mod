@@ -1,0 +1,30 @@
+# Normalize detected text while preserving binary resources.
+* text=auto
+*.md text eol=lf
+*.nss text eol=lf
+*.2da text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Packed game content and structured binary resources.
+*.mod binary
+*.hak binary
+*.erf binary
+*.tlk binary
+*.ncs binary
+*.are binary
+*.git binary
+*.gic binary
+*.ifo binary
+*.dlg binary
+*.jrl binary
+*.utc binary
+*.uti binary
+*.utp binary
+*.utd binary
+*.ute binary
+*.utm binary
+*.uts binary
+*.utt binary
+*.utw binary
